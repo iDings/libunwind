@@ -143,6 +143,7 @@ libunwind_coredump_la_SOURCES =                \
 	coredump/ucd_file_table.c              \
 	coredump/_UCD_find_proc_info.c         \
 	coredump/_UCD_get_proc_name.c          \
+	coredump/_UCD_get_elf_filename.c       \
 	\
 	mi/init.c                              \
 	coredump/_UPT_elf.c                    \
@@ -171,6 +172,7 @@ libunwind_nto_la_SOURCES =                     \
 	nto/unw_nto_find_proc_info.c           \
 	nto/unw_nto_get_dyn_info_list_addr.c   \
 	nto/unw_nto_get_proc_name.c            \
+	nto/unw_nto_get_elf_filename.c         \
 	nto/unw_nto_put_unwind_info.c          \
 	nto/unw_nto_resume.c
 libunwind_nto_la_LIBADD =                      \
@@ -191,6 +193,7 @@ libunwind_ptrace_la_SOURCES =                  \
 	ptrace/_UPT_find_proc_info.c           \
 	ptrace/_UPT_get_dyn_info_list_addr.c   \
 	ptrace/_UPT_get_proc_name.c            \
+	ptrace/_UPT_get_elf_filename.c         \
 	ptrace/_UPT_put_unwind_info.c          \
 	ptrace/_UPT_reg_offset.c               \
 	ptrace/_UPT_resume.c

@@ -705,6 +705,26 @@ elf_w (get_proc_ip_range) (unw_addr_space_t as, pid_t pid, unw_word_t ip,
   return ret;
 }
 
+HIDDEN int
+elf_w (get_elf_filename) (unw_addr_space_t as, pid_t pid, unw_word_t ip,
+                          char *buf, size_t buf_len, unw_word_t *offp)
+{
+  unsigned long segbase, mapoff;
+  struct elf_image ei;
+  int ret;
+
+  ret = tdep_get_elf_image (&ei, pid, ip, &segbase, &mapoff, buf, buf_len);
+  if (ret < 0)
+    return ret;
+
+  if (offp)
+      *offp = ip - segbase + mapoff;
+
+  mi_munmap (ei.image, ei.size);
+  ei.image = NULL;
+  return ret;
+}
+
 HIDDEN Elf_W (Shdr)*
 elf_w (find_section) (const struct elf_image *ei, const char* secname)
 {
