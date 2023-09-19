@@ -385,7 +385,7 @@ unw_step (unw_cursor_t *cursor)
 {
   struct cursor *c = (struct cursor *) cursor;
   int validate = c->validate;
-  unw_word_t fp;
+  unw_word_t fp, current_fp = c->dwarf.cfa;
   int ret;
 
   Debug (1, "(cursor=%p, ip=0x%016lx, cfa=0x%016lx))\n",
@@ -466,14 +466,18 @@ unw_step (unw_cursor_t *cursor)
           ret = dwarf_get (&c->dwarf, c->dwarf.loc[UNW_AARCH64_X29], &fp);
 	  if (likely (ret == 0))
 	    {
-	      if (fp == 0)
+              /* check whether fp is valid, magic number is from gperftools
+               *  stacktrace_generic_fp-inl.h, portable?
+              */
+	      if (fp == 0 || fp < (16 << 10) || ((fp - current_fp) > (128 << 10)))
 	        {
 		  /* Procedure Call Standard for the ARM 64-bit Architecture (AArch64)
 		   * specifies that the end of the frame record chain is indicated by
 		   * the address zero in the address for the previous frame.
 		   */
 		  c->dwarf.ip = 0;
-		  Debug (2, "NULL frame pointer X29 loc, returning 0\n");
+		  Debug (2, "frame pointer X29 loc invalid, fp:0x%lx current_fp:0x%lx returning 0\n",
+                         fp, current_fp);
 		  return 0;
 	        }
 
